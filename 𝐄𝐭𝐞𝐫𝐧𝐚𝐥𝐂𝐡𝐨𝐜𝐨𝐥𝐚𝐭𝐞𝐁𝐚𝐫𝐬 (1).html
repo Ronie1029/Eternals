@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eternal Chocolate Bars</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Base Styles & Custom Properties */
+        :root {
+            --midnight-blue: #0c1445;
+            --ivory-cream: #f5f5dc;
+            --gold-foil: #d4af37;
+            --gold-foil-dark: #b48811;
+            --gold-foil-light: #fef4a9;
+        }
+
+        body {
+            background-color: var(--midnight-blue);
+            color: var(--ivory-cream);
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        /* Custom Typography */
+        .font-brand { font-family: 'Cinzel Decorative', serif; }
+
+        /* Gold Foil Effect */
+        .gold-foil-text {
+            background: linear-gradient(145deg, var(--gold-foil-light), var(--gold-foil), var(--gold-foil-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+        }
+
+        /* Celestial Background */
+        .celestial-bg {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill='%23FFFFFF' fill-opacity='0.04'%3E%3Ccircle cx='50' cy='50' r='0.5'/%3E%3Ccircle cx='10' cy='10' r='0.5'/%3E%3Ccircle cx='90' cy='90' r='0.5'/%3E%3Ccircle cx='10' cy='90' r='0.25'/%3E%3Ccircle cx='90' cy='10' r='0.25'/%3E%3Ccircle cx='30' cy='70' r='0.5'/%3E%3Ccircle cx='70' cy='30' r='0.5'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Custom Buttons */
+        .btn-gold {
+            border: 1px solid var(--gold-foil);
+            color: var(--gold-foil);
+            transition: all 0.3s ease;
+        }
+        .btn-gold:hover {
+            background-color: var(--gold-foil);
+            color: var(--midnight-blue);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -500px 0; }
+            100% { background-position: 500px 0; }
+        }
+        .shimmer-effect {
+            position: relative;
+            overflow: hidden;
+        }
+        .shimmer-effect::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-25deg);
+            animation: shimmer 3s infinite;
+        }
+
+        /* Navigation Active State */
+        .nav-link.active {
+            color: var(--gold-foil);
+            position: relative;
+        }
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            background-color: var(--gold-foil);
+            border-radius: 50%;
+        }
+        
+        /* Product Card Reflection */
+        .reflection {
+            -webkit-box-reflect: below 5px linear-gradient(to bottom, rgba(0,0,0,0.0), rgba(0,0,0,0.2));
+        }
+
+        /* Hide scrollbar for cart */
+        #cart-items::-webkit-scrollbar { display: none; }
+        #cart-items { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="celestial-bg">
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-midnight-blue/80 backdrop-blur-sm border-b border-ivory-cream/10">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" onclick="navigateTo('home')" class="font-brand text-3xl gold-foil-text tracking-wider">Eternal</a>
+            <nav class="hidden md:flex items-center space-x-8">
+                <a href="#" onclick="navigateTo('home')" class="nav-link text-ivory-cream hover:text-gold-foil transition-colors duration-300 active" data-page="home">Home</a>
+                <a href="#" onclick="navigateTo('shop')" class="nav-link text-ivory-cream hover:text-gold-foil transition-colors duration-300" data-page="shop">Shop</a>
+                <a href="#" onclick="navigateTo('about')" class="nav-link text-ivory-cream hover:text-gold-foil transition-colors duration-300" data-page="about">About</a>
+                <a href="#" onclick="navigateTo('contact')" class="nav-link text-ivory-cream hover:text-gold-foil transition-colors duration-300" data-page="contact">Contact</a>
+            </nav>
+            <div class="flex items-center">
+                <button onclick="toggleCart()" class="relative">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-ivory-cream hover:text-gold-foil transition-colors">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path>
+                    </svg>
+                    <span id="cart-badge" class="absolute -top-2 -right-2 bg-gold-foil text-midnight-blue text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold hidden">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-24">
+        <!-- Home Page -->
+        <div id="home" class="page-content">
+            <section class="min-h-screen flex items-center justify-center text-center px-6 fade-in">
+                <div class="max-w-4xl">
+                    <div class="shimmer-effect mb-12 inline-block">
+                        <img src="https://placehold.co/400x200/0c1445/d4af37?text=Eternal" alt="Eternal Chocolate Bar" class="w-80 md:w-96 reflection">
+                    </div>
+                    <h1 class="font-brand text-4xl md:text-6xl tracking-wider leading-tight">Some moments are meant to last forever.</h1>
+                    <p class="mt-6 text-lg text-ivory-cream/80 max-w-2xl mx-auto">Discover chocolate that transcends time. Crafted from the finest single-origin cacao, each bar is a timeless experience.</p>
+                    <button onclick="navigateTo('shop')" class="btn-gold px-10 py-3 mt-12 rounded-full text-lg tracking-wider">Discover Eternal</button>
+                </div>
+            </section>
+        </div>
+
+        <!-- Shop Page -->
+        <div id="shop" class="page-content hidden">
+            <section class="container mx-auto px-6 py-16 fade-in">
+                <h2 class="font-brand text-5xl text-center mb-4">Our Collection</h2>
+                <p class="text-center text-ivory-cream/70 mb-12">Select a piece of eternity to savor.</p>
+                <div class="flex justify-center space-x-4 mb-12" id="filters">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="dark">Dark</button>
+                    <button class="filter-btn" data-filter="milk">Milk</button>
+                    <button class="filter-btn" data-filter="white">White</button>
+                </div>
+                <div id="product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+                    <!-- Product cards will be injected here by JS -->
+                </div>
+            </section>
+        </div>
+
+        <!-- About Page -->
+        <div id="about" class="page-content hidden">
+            <section class="container mx-auto px-6 py-16 fade-in">
+                <div class="max-w-4xl mx-auto text-center">
+                    <h2 class="font-brand text-5xl mb-6">Our Story</h2>
+                    <p class="text-lg leading-relaxed text-ivory-cream/80 mb-12">
+                        Eternal was born from a simple vision: to create a chocolate experience that feels timeless. We believe that the right flavor, at the right moment, can create a memory that lasts forever. Our journey takes us to the world's finest cacao farms, sourcing single-origin beans that tell a story of their own.
+                    </p>
+                    <div class="bg-ivory-cream/5 rounded-lg p-8 my-12 border border-ivory-cream/10">
+                        <p class="text-2xl italic font-light text-gold-foil">"Crafted from the finest single-origin cacao — a piece of eternity for you to savor."</p>
+                    </div>
+                    <img src="https://placehold.co/800x400/0c1445/f5f5dc?text=Crafting+Process" alt="Crafting Process" class="rounded-lg shadow-2xl mx-auto">
+                </div>
+            </section>
+        </div>
+
+        <!-- Contact Page -->
+        <div id="contact" class="page-content hidden">
+            <section class="container mx-auto px-6 py-16 fade-in">
+                <div class="max-w-2xl mx-auto text-center">
+                    <h2 class="font-brand text-5xl mb-4">Get In Touch</h2>
+                    <p class="text-ivory-cream/70 mb-12">We'd love to hear from you. For inquiries, collaborations, or just to share a timeless moment.</p>
+                    <form id="contact-form" class="space-y-6">
+                        <input type="text" placeholder="Your Name" class="w-full bg-ivory-cream/5 border border-ivory-cream/20 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-gold-foil transition">
+                        <input type="email" placeholder="Your Email" class="w-full bg-ivory-cream/5 border border-ivory-cream/20 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-gold-foil transition">
+                        <textarea placeholder="Your Message" rows="5" class="w-full bg-ivory-cream/5 border border-ivory-cream/20 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-gold-foil transition"></textarea>
+                        <button type="submit" class="btn-gold w-full py-3 rounded-md text-lg">Send Message</button>
+                    </form>
+                    <div class="mt-12">
+                        <p class="mb-4">Or connect with our community:</p>
+                        <div class="flex justify-center space-x-6">
+                            <a href="https://discord.gg/9vRvDFpUxV" target="_blank" class="text-gold-foil hover:text-ivory-cream transition">Discord</a>
+                            <a href="#" class="text-gold-foil hover:text-ivory-cream transition">Instagram</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <!-- Instagram Feed Section -->
+    <section class="py-20 border-t border-ivory-cream/10">
+        <h3 class="font-brand text-3xl text-center mb-10">Follow Our Journey @eternalchocolatebars</h3>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
+            <a href="#" class="block overflow-hidden"><img src="https://placehold.co/300x300/1a1a2e/d4af37?text=Eternal" class="w-full h-full object-cover transform hover:scale-110 transition-transform duration-300"></a>
+            <a href="#" class="block overflow-hidden"><img src="https://placehold.co/300x300/800020/f5f5dc?text=Timeless" class="w-full h-full object-cover transform hover:scale-110 transition-transform duration-300"></a>
+            <a href="#" class="block overflow-hidden"><img src="https://placehold.co/300x300/d4af37/0c1445?text=Art" class="w-full h-full object-cover transform hover:scale-110 transition-transform duration-300"></a>
+            <a href="#" class="block overflow-hidden"><img src="https://placehold.co/300x300/ff7f50/f5f5dc?text=Eclipse" class="w-full h-full object-cover transform hover:scale-110 transition-transform duration-300"></a>
+            <a href="#" class="block overflow-hidden"><img src="https://placehold.co/300x300/ffc0cb/0c1445?text=Supernova" class="w-full h-full object-cover transform hover:scale-110 transition-transform duration-300"></a>
+            <a href="#" class="block overflow-hidden"><img src="https://placehold.co/300x300/0c1445/d4af37?text=Craft" class="w-full h-full object-cover transform hover:scale-110 transition-transform duration-300"></a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-ivory-cream/5 py-12">
+        <div class="container mx-auto px-6 text-center text-ivory-cream/60">
+            <div class="flex justify-center space-x-8 mb-6">
+                <a href="#" onclick="navigateTo('home')" class="hover:text-gold-foil transition">Home</a>
+                <a href="#" onclick="navigateTo('shop')" class="hover:text-gold-foil transition">Shop</a>
+                <a href="#" onclick="navigateTo('about')" class="hover:text-gold-foil transition">About</a>
+                <a href="#" onclick="navigateTo('contact')" class="hover:text-gold-foil transition">Contact</a>
+                <a href="https://discord.gg/9vRvDFpUxV" target="_blank" class="hover:text-gold-foil transition">Discord</a>
+                <a href="#" class="hover:text-gold-foil transition">Instagram</a>
+            </div>
+            <p class="font-brand text-2xl gold-foil-text mb-2">Eternal</p>
+            <p class="text-sm">&copy; 2025 Eternal Chocolate Bars. All Rights Reserved. ∞</p>
+        </div>
+    </footer>
+    
+    <!-- Cart Sidebar -->
+    <div id="cart-sidebar" class="fixed top-0 right-0 h-full w-full max-w-md bg-midnight-blue shadow-2xl transform translate-x-full transition-transform duration-500 ease-in-out z-50 flex flex-col">
+        <div class="p-6 flex justify-between items-center border-b border-ivory-cream/10">
+            <h3 class="font-brand text-2xl">Your Cart</h3>
+            <button onclick="toggleCart()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-ivory-cream hover:text-gold-foil"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+        <div id="cart-items" class="flex-grow p-6 overflow-y-auto">
+            <!-- Cart items will be injected here -->
+            <p id="empty-cart-message" class="text-center text-ivory-cream/50 mt-10">Your cart is empty.</p>
+        </div>
+        <div class="p-6 border-t border-ivory-cream/10">
+            <div class="flex justify-between items-center text-lg mb-4">
+                <span>Subtotal</span>
+                <span id="cart-subtotal">₹0.00</span>
+            </div>
+            <button id="checkout-btn" class="btn-gold w-full py-3 rounded-md hidden">Proceed to Checkout</button>
+        </div>
+    </div>
+    <div id="cart-overlay" class="fixed inset-0 bg-black/50 z-40 hidden" onclick="toggleCart()"></div>
+
+    <!-- Checkout Modal -->
+    <div id="checkout-modal" class="fixed inset-0 bg-black/70 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-midnight-blue rounded-lg shadow-xl w-full max-w-lg p-8 relative celestial-bg">
+            <button onclick="closeCheckout()" class="absolute top-4 right-4 text-ivory-cream/50 hover:text-gold-foil">&times;</button>
+            <h3 class="font-brand text-3xl text-center mb-6">Checkout</h3>
+            <div id="checkout-content">
+                <!-- Shipping Info & Payment -->
+            </div>
+            <div id="order-success" class="hidden text-center py-10">
+                <svg class="w-16 h-16 text-gold-foil mx-auto mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M11.33,6.33a5,5,0,1,1-5,5,5,5,0,0,1,5-5m1.34,1.34a5,5,0,1,0,5,5,5,5,0,0,0-5-5" />
+                </svg>
+                <h4 class="font-brand text-2xl mb-2">Thank You!</h4>
+                <p class="text-ivory-cream/70">Your order is confirmed. A piece of eternity is on its way.</p>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // --- DATA ---
+    const products = [
+        { id: 1, name: 'Timeless Dark', description: '60% Cacao', price: 250, category: 'dark', color: '#800020' },
+        { id: 2, name: 'Midnight Milk', description: 'Creamy & Smooth', price: 220, category: 'milk', color: '#c0844f' },
+        { id: 3, name: 'Caramel Eclipse', description: 'with a touch of Sea Salt', price: 280, category: 'milk', color: '#ff7f50' },
+        { id: 4, name: 'Supernova', description: 'White Chocolate & Raspberry', price: 300, category: 'white', color: '#ffc0cb' },
+        { id: 5, name: 'Cosmic Mint', description: 'Dark Chocolate with Mint', price: 260, category: 'dark', color: '#2E8B57' },
+        { id: 6, name: 'Orion Orange', description: 'Dark Chocolate & Zesty Orange', price: 260, category: 'dark', color: '#FFA500' }
+    ];
+    let cart = [];
+
+    // --- DOM ELEMENTS ---
+    const pages = document.querySelectorAll('.page-content');
+    const navLinks = document.querySelectorAll('.nav-link');
+    const productGrid = document.getElementById('product-grid');
+    const cartSidebar = document.getElementById('cart-sidebar');
+    const cartOverlay = document.getElementById('cart-overlay');
+    const cartItemsContainer = document.getElementById('cart-items');
+    const emptyCartMessage = document.getElementById('empty-cart-message');
+    const cartBadge = document.getElementById('cart-badge');
+    const cartSubtotal = document.getElementById('cart-subtotal');
+    const checkoutBtn = document.getElementById('checkout-btn');
+    const checkoutModal = document.getElementById('checkout-modal');
+
+    // --- NAVIGATION ---
+    function navigateTo(pageId) {
+        pages.forEach(page => page.classList.add('hidden'));
+        document.getElementById(pageId).classList.remove('hidden');
+
+        navLinks.forEach(link => {
+            link.classList.toggle('active', link.dataset.page === pageId);
+        });
+        window.scrollTo(0, 0);
+    }
+    
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            navigateTo(link.dataset.page);
+        });
+    });
+
+    // --- SHOP PAGE LOGIC ---
+    function renderProducts(filter = 'all') {
+        productGrid.innerHTML = '';
+        const filteredProducts = filter === 'all' ? products : products.filter(p => p.category === filter);
+
+        filteredProducts.forEach(product => {
+            const card = document.createElement('div');
+            card.className = 'bg-ivory-cream/5 border border-ivory-cream/10 rounded-lg text-center p-8 flex flex-col items-center transform hover:-translate-y-2 transition-transform duration-300';
+            card.innerHTML = `
+                <div class="mb-6 reflection">
+                    <img src="https://placehold.co/200x100/${product.color.substring(1)}/f5f5dc?text=${product.name.replace(' ', '+')}" alt="${product.name}" class="w-48">
+                </div>
+                <h3 class="font-brand text-2xl">${product.name}</h3>
+                <p class="text-ivory-cream/60 mb-4">${product.description}</p>
+                <p class="text-xl text-gold-foil font-semibold mb-6">₹${product.price.toFixed(2)}</p>
+                <button onclick="addToCart(${product.id})" class="btn-gold w-full py-2 rounded-full mt-auto">Add to Cart</button>
+            `;
+            productGrid.appendChild(card);
+        });
+    }
+
+    document.querySelectorAll('.filter-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+            document.querySelector('.filter-btn.active').classList.remove('active');
+            e.target.classList.add('active');
+            renderProducts(e.target.dataset.filter);
+        });
+        // Simple styling for filter buttons
+        button.classList.add('px-4', 'py-1', 'rounded-full', 'border', 'border-ivory-cream/20', 'hover:bg-ivory-cream/10', 'transition');
+        if (button.dataset.filter === 'all') button.classList.add('bg-ivory-cream/10');
+    });
+
+    // --- CART LOGIC ---
+    function toggleCart() {
+        cartSidebar.classList.toggle('translate-x-full');
+        cartOverlay.classList.toggle('hidden');
+    }
+
+    function addToCart(productId) {
+        const product = products.find(p => p.id === productId);
+        const cartItem = cart.find(item => item.id === productId);
+
+        if (cartItem) {
+            cartItem.quantity++;
+        } else {
+            cart.push({ ...product, quantity: 1 });
+        }
+        updateCart();
+        toggleCart();
+    }
+
+    function updateCart() {
+        if (cart.length === 0) {
+            emptyCartMessage.classList.remove('hidden');
+            checkoutBtn.classList.add('hidden');
+            cartItemsContainer.innerHTML = ''; // Clear if items are removed to empty
+        } else {
+            emptyCartMessage.classList.add('hidden');
+            checkoutBtn.classList.remove('hidden');
+            cartItemsContainer.innerHTML = cart.map(item => `
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center">
+                        <img src="https://placehold.co/60x30/${item.color.substring(1)}/f5f5dc" alt="${item.name}" class="rounded-sm">
+                        <div class="ml-4">
+                            <p class="font-semibold">${item.name}</p>
+                            <p class="text-sm text-ivory-cream/50">₹${item.price.toFixed(2)}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="number" value="${item.quantity}" min="1" onchange="updateQuantity(${item.id}, this.value)" class="w-12 bg-ivory-cream/10 text-center rounded-md border border-ivory-cream/20">
+                         <button onclick="removeFromCart(${item.id})" class="ml-4 text-ivory-cream/50 hover:text-red-500">&times;</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+        if(totalItems > 0) {
+            cartBadge.textContent = totalItems;
+            cartBadge.classList.remove('hidden');
+        } else {
+            cartBadge.classList.add('hidden');
+        }
+        
+        cartSubtotal.textContent = `₹${subtotal.toFixed(2)}`;
+    }
+    
+    function updateQuantity(productId, quantity) {
+        const cartItem = cart.find(item => item.id === productId);
+        if (cartItem) {
+            cartItem.quantity = parseInt(quantity);
+            if(cartItem.quantity <= 0) {
+                removeFromCart(productId);
+            } else {
+                updateCart();
+            }
+        }
+    }
+    
+    function removeFromCart(productId) {
+        cart = cart.filter(item => item.id !== productId);
+        updateCart();
+    }
+
+    // --- CHECKOUT LOGIC ---
+    document.getElementById('checkout-btn').addEventListener('click', () => {
+        toggleCart();
+        checkoutModal.classList.remove('hidden');
+        renderCheckoutForm();
+    });
+
+    function closeCheckout() {
+        checkoutModal.classList.add('hidden');
+        document.getElementById('order-success').classList.add('hidden');
+    }
+
+    function renderCheckoutForm() {
+        const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        document.getElementById('checkout-content').innerHTML = `
+            <form id="payment-form" class="space-y-4">
+                <h4 class="text-lg font-semibold border-b border-ivory-cream/10 pb-2 mb-4">Shipping Information</h4>
+                <input type="text" required placeholder="Full Name" class="w-full bg-ivory-cream/5 p-2 rounded-md border border-ivory-cream/20 focus:outline-none focus:ring-1 focus:ring-gold-foil">
+                <input type="text" required placeholder="Address" class="w-full bg-ivory-cream/5 p-2 rounded-md border border-ivory-cream/20 focus:outline-none focus:ring-1 focus:ring-gold-foil">
+                <div class="flex space-x-4">
+                    <input type="text" required placeholder="City" class="w-full bg-ivory-cream/5 p-2 rounded-md border border-ivory-cream/20 focus:outline-none focus:ring-1 focus:ring-gold-foil">
+                    <input type="text" required placeholder="Pincode" class="w-full bg-ivory-cream/5 p-2 rounded-md border border-ivory-cream/20 focus:outline-none focus:ring-1 focus:ring-gold-foil">
+                </div>
+                 <h4 class="text-lg font-semibold border-b border-ivory-cream/10 pb-2 mb-4 pt-4">Payment Method</h4>
+                 <div class="space-y-2 text-ivory-cream/80">
+                    <label class="flex items-center p-3 bg-ivory-cream/5 rounded-md border border-transparent has-[:checked]:border-gold-foil has-[:checked]:bg-gold-foil/10"><input type="radio" name="payment" value="upi" checked class="mr-3 accent-gold-foil"> UPI / Razorpay / Paytm</label>
+                    <label class="flex items-center p-3 bg-ivory-cream/5 rounded-md border border-transparent has-[:checked]:border-gold-foil has-[:checked]:bg-gold-foil/10"><input type="radio" name="payment" value="card" class="mr-3 accent-gold-foil"> Credit / Debit Card</label>
+                    <label class="flex items-center p-3 bg-ivory-cream/5 rounded-md border border-transparent has-[:checked]:border-gold-foil has-[:checked]:bg-gold-foil/10"><input type="radio" name="payment" value="cod" class="mr-3 accent-gold-foil"> Cash on Delivery (COD)</label>
+                 </div>
+                 <div class="text-right text-xl pt-4">Total: <span class="text-gold-foil font-bold">₹${subtotal.toFixed(2)}</span></div>
+                 <button type="submit" class="btn-gold w-full py-3 mt-4 rounded-md">Place Order</button>
+            </form>
+        `;
+
+        document.getElementById('payment-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            // In a real app, this would call a payment gateway
+            document.getElementById('checkout-content').innerHTML = ''; // Clear the form
+            document.getElementById('order-success').classList.remove('hidden');
+            cart = []; // Empty the cart
+            updateCart();
+            setTimeout(closeCheckout, 4000); // Close modal after a delay
+        });
+    }
+    
+    // --- INITIALIZATION ---
+    document.addEventListener('DOMContentLoaded', () => {
+        renderProducts();
+        updateCart(); // Render initial empty cart
+        navigateTo('home');
+        
+        document.getElementById('contact-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Simple submission feedback
+            e.target.reset();
+            alert('Thank you for your message!');
+        });
+    });
+</script>
+
+</body>
+</html>
